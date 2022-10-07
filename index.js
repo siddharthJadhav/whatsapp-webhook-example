@@ -239,34 +239,72 @@ app.post('/push', (req, res, next) => {
 //   });
 // }
 
-function urlBase64ToUint8Array(base64String) {
-  const padding = "=".repeat((4 - base64String.length % 4) % 4);
-  const base64 = (base64String + padding)
-    .replace(/\-/g, "+")
-    .replace(/_/g, "/");
+// function urlBase64ToUint8Array(base64String) {
+//   const padding = "=".repeat((4 - base64String.length % 4) % 4);
+//   const base64 = (base64String + padding)
+//     .replace(/\-/g, "+")
+//     .replace(/_/g, "/");
 
-  const rawData = window.atob(base64);
-  const outputArray = new Uint8Array(rawData.length);
+//   const rawData = window.atob(base64);
+//   const outputArray = new Uint8Array(rawData.length);
 
-  for (let i = 0; i < rawData.length; ++i) {
-    outputArray[i] = rawData.charCodeAt(i);
-  }
-  return outputArray;
-} 
+//   for (let i = 0; i < rawData.length; ++i) {
+//     outputArray[i] = rawData.charCodeAt(i);
+//   }
+//   return outputArray;
+// } 
 
 // Allow clients to subscribe to this application server for notifications
-app.post('/subscribe', (req, res) => {
-  const body = JSON.stringify(req.body);
-  console.log('body : ', body)
-  let sendMessage;
-  if (_.includes(subscriptions, body)) {
-    sendMessage = 'constants.messages.SUBSCRIPTION_ALREADY_STORED';
-  } else {
-    subscriptions.push(body);
+// app.post('/subscribe', (req, res) => {
+//   const body = JSON.stringify(req.body);
+//   console.log('body : ', body)
+//   let sendMessage;
+//   if (_.includes(subscriptions, body)) {
+//     sendMessage = 'constants.messages.SUBSCRIPTION_ALREADY_STORED';
+//   } else {
+//     subscriptions.push(body);
 
-    sendMessage = 'constants.messages.SUBSCRIPTION_STORED';
-  }
-  res.send(sendMessage);
+//     sendMessage = 'constants.messages.SUBSCRIPTION_STORED';
+//   }
+//   res.send(sendMessage);
+// });
+
+app.post('/post', (req, res) => {
+
+  const token = req.body.token;
+  const notification = req.body.notification;
+  //   //Send push notification
+
+  console.log('token : ', token);
+  console.log('notification : ', notification);
+
+
+  axios({
+                    method: 'post',
+                    url: 'https://fcm.googleapis.com/fcm/send',
+                    data: {
+                      'to': token,
+                      'message': {
+                        'token': token,
+                      },
+                      notification: notification
+                      // "notification": {
+                      //   "title": "Push Notification",
+                      //   "body": "Firebase  push notification"
+                      // }
+                    },
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'Authorization':
+                          'key=AAAANYoHpnE:APA91bGt9A534YZuJRzqs0v_baoY090jGcIYbvJ5aQ9-e7fjIPsw0qVYssCVToDnnWEV9UheMxZ_EI7rl2INeVdV4G8Q8kR_qpdfqUFZpqF4bPwUFxFef4D_hELYPe1MQ4C-3m7H3OGQ'
+                    }
+                }).then(() => {
+                  res.send('Sucessfully send notification');
+                }).catch(err => {
+                  res.send('Error sending notification');
+                })
+
+
 });
   
 
