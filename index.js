@@ -176,7 +176,8 @@ function sendNotification(req, res, notification) {
         'message': {
           'token': deviceToken,
         },
-        notification: notification
+        notification: notification,
+        data: notification
         // "notification": {
         //   "title": "Push Notification",
         //   "body": "Firebase  push notification"
