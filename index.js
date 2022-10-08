@@ -53,7 +53,7 @@ app.post('/webhooks', (req, res) => {
   const notification = {
     title: "Node push notification",
     body: "Firebase  push notification using node server",
-    data: bodyParam
+    data: req.body
   }
 
   sendNotification(req, res, notification);
