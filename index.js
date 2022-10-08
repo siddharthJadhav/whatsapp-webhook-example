@@ -49,6 +49,15 @@ app.post('/webhooks', (req, res) => {
 
   console.log("Msg object is ", JSON.stringify(bodyParam));
 
+  
+  const notification = {
+    title: "Node push notification",
+    body: "Firebase  push notification using node server",
+    data: bodyParam
+  }
+
+  sendNotification(req, res, notification);
+
   // if(bodyParam.object) {
   //     if(bodyParam.entry &&
   //         bodyParam.entry[0].changes &&
@@ -93,8 +102,60 @@ app.post('/webhooks', (req, res) => {
 
 // Sending notification
 app.post('/post', (req, res) => {
-  const notification = req.body.notification;
 
+  const notification = req.body.notification;
+  sendNotification(req, res, notification);
+  // console.log('token : ', token);
+  // console.log('notification : ', notification);
+
+  // if(deviceToken == null) {
+  //   res.status(400).json({
+  //     success: false,
+  //     msg: 'Invalid device token'
+  //   });
+  // } 
+
+  // if(notification != null) {
+  //   axios({
+  //     method: 'post',
+  //     url: 'https://fcm.googleapis.com/fcm/send',
+  //     data: {
+  //       'to': deviceToken,
+  //       'message': {
+  //         'token': deviceToken,
+  //       },
+  //       notification: notification
+  //       // "notification": {
+  //       //   "title": "Push Notification",
+  //       //   "body": "Firebase  push notification"
+  //       // }
+  //     },
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       'Authorization':`key=${process.env.PUSH_AUTH_KEY}`
+  //     }
+  //   }).then(() => {
+  //     // res.send('Sucessfully send notification');
+  //     res.status(200).json({
+  //       success: true,
+  //       msg: 'Sucessfully send notification'
+  //     });
+  //   }).catch(err => {
+  //     res.send('Error sending notification');
+  //     res.status(400).json({
+  //       success: true,
+  //       msg: 'Error sending notification'
+  //     });
+  //   })
+  // } else {
+  //   res.status(400).json({
+  //     success: false,
+  //     msg: 'Invalid notification data'
+  //   })
+  // }
+});
+
+function sendNotification(req, res, notification) {
   console.log('token : ', token);
   console.log('notification : ', notification);
 
@@ -143,7 +204,8 @@ app.post('/post', (req, res) => {
       msg: 'Invalid notification data'
     })
   }
-});
+
+}
 
 // Register device token
 app.post('/registerDevice', (req, res) => {
